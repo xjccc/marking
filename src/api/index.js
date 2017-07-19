@@ -1,7 +1,7 @@
 import fetch from './ajax'
 export const DEBUG = true                  // 是否开发模式
-const HTTP_DEV = 'http://tag.360che.com'      // 测试地址
-const HTTPS = 'https://nearby-api.360che.com'              // 正式地址
+const HTTP_DEV = 'http://tag.360che.com/DealerTag'      // 测试地址
+const HTTPS = 'http://tag.360che.com/DealerTag'              // 正式地址
 const URLS = DEBUG ? HTTP_DEV : HTTPS
 class XHR {
 // 1.分类列表

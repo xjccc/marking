@@ -1,9 +1,9 @@
 <template>
   <div class="content">
-    <div class="item" v-for="(item, index) in typeList">
+    <Form :label-width="100" ref="formItems_`${categoryid}`" :model="formItem" class="item" v-for="(item, index) in typeList">
       <h2>{{item.categoryname}}</h2>
-      <marking :categoryid="item.categoryid" :taglisturl="item.taglisturl"></marking>
-    </div>
+      <marking :taglisturl="item.taglisturl"></marking>
+    </Form>
   </div>
 </template>
 <script>
