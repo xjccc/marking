@@ -4,18 +4,18 @@ const HTTP_DEV = 'http://tag.360che.com/DealerTag'      // 测试地址
 const HTTPS = 'http://tag.360che.com/DealerTag'              // 正式地址
 const URLS = DEBUG ? HTTP_DEV : HTTPS
 class XHR {
-// 1.分类列表
+// 1.分类标签列表
   TypeList (json) {
     return fetch({
-      url: `${URLS}/CategoryList.aspx`,
+      url: `${URLS}/CategoryTagList.aspx`,
       body: json,
       type: 'get'
     })
   }
-// 2.标签列表
-  joinShop (url, json) {
+// 2.提交打分
+  submitScroe (json) {
     return fetch({
-      url: url,
+      url: `${URLS}/TagScore.aspx`,
       body: json,
       type: 'get'
     })
