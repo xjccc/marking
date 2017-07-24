@@ -17,7 +17,7 @@ class XHR {
     return fetch({
       url: `${URLS}/TagScore.aspx`,
       body: json,
-      type: 'post'
+      type: 'POST'
     })
   }
 }

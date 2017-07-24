@@ -24,7 +24,8 @@ export default {
       items: []
     },
     submitData: {},
-    groupId: 1
+    groupId: 1,
+    scroeid: ''
   }),
   components: {
     Marking
@@ -33,6 +34,7 @@ export default {
     if (window.groupId) {
       this.groupId = window.groupId
     }
+    this.scroeid = this.getQueryString()
     if (localStorage.getItem('md5')) {
       this.md5Str = localStorage.getItem('md5')
     }
@@ -53,7 +55,8 @@ export default {
     getTypeList () {
       let json = {
         'md5': this.md5Str,
-        'groupId': this.groupId
+        'groupId': this.groupId,
+        'scroeid': this.scroeid
       }
       XHR.TypeList(json).then((res) => {
         let a = res.data.data.categorylist
@@ -87,15 +90,12 @@ export default {
       }
       this.submitData['groupId'] = this.groupId
       // 获取scroeid
-      this.submitData['scoreid'] = this.getQueryString()
+      this.submitData['scoreid'] = this.scoreid
       XHR.submitScroe(this.submitData).then((res) => {
         if (res.data.status === '1') {
           this.$Modal.success({
             title: '提交成功',
-            content: res.data.message,
-            onOk: () => {
-              this.handleReset('formItems')
-            }
+            content: res.data.message
           })
         } else {
           this.$Modal.error({
