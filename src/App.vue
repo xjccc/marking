@@ -23,7 +23,7 @@
   </Menu>
     <Row type="flex" class="row">
       <i-col span="5" class="layout-menu-left">
-        <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']" style="height:100%;">
+        <Menu active-name="1-1" theme="light" width="auto" :open-names="['1']" style="height:100%;">
           <div class="layout-logo-left"></div>
           <Submenu name="1">
             <template slot="title">

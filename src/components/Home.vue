@@ -1,8 +1,8 @@
 <template>
-  <Form class="content" :label-width="120" ref="formItems" :model="formItems" v-if="typeList.length">
+  <Form class="content" ref="formItems" :model="formItems" label-position="top" v-if="typeList.length">
     <div class="item" v-for="(item, index) in typeList">
       <h2>{{item.categoryname}}</h2>
-      <marking :tagItems="item.taglist"></marking>
+      <marking class="marking-content" :tagItems="item.taglist"></marking>
     </div>
     <Form-item>
       <Button type="primary" @click="handleSubmit('formItems')">提交</Button>
@@ -82,13 +82,17 @@ export default {
           this.submitData[item.tagname] = item.tagsubmitvalue
         }
       }
-      this.submitData['groupid'] = 1
-      this.submitData['scoreid'] = 2
+      this.submitData['groupid'] = window.groupid
+      // 获取scroeid
+      this.submitData['scoreid'] = this.getQueryString()
       XHR.submitScroe(this.submitData).then((res) => {
         if (res.data.status === '1') {
           this.$Modal.success({
             title: '提交成功',
-            content: res.data.message
+            content: res.data.message,
+            onOk: () => {
+              this.handleReset('formItems')
+            }
           })
         } else {
           this.$Modal.error({
@@ -109,13 +113,35 @@ export default {
           item.tagsubmitvalue = ''
         }
       }
+    },
+    getQueryString () {  // 获取scroeid  第一个参数值
+      let name, value
+      let str = location.href.split('#')[0] // 取得整个地址栏
+      let num = str.indexOf('?')
+      str = str.substr(num + 1) // 取得所有参数   stringvar.substr(start [, length ]
+      let arr = str.split('&') // 各个参数放到数组里
+      for (let i = 0; i < arr.length; i++) {
+        num = arr[i].indexOf('=')
+        if (num > 0) {
+          name = arr[i].substr(0, num)
+          value = arr[i].substr(num + 1)
+          this[name] = value
+        }
+        let string = arr[0]   // 判断第一个参数
+        let index = string.indexOf('=')
+        string = string.substr(index + 1) // 获取reffer的值
+        return string
+      }
     }
   }
 }
 </script>
 <style scoped>
   .item > h2{
+    font-size: 20px;
+    padding-bottom: 10px;
     margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
   }
   .item{
     padding-bottom: 20px;
@@ -123,5 +149,11 @@ export default {
   .no-list{
     text-align: center;
     font-size: 20px;
+  }
+  .marking-content{
+    padding-left: 20px;
+  }
+  .ivu-form .ivu-form-item .ivu-form-item-label{
+    font-size: 14px;
   }
 </style>
