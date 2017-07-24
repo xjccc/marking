@@ -4,7 +4,7 @@
       <h2>{{item.categoryname}}</h2>
       <marking class="marking-content" :tagItems="item.taglist"></marking>
     </div>
-    <Form-item>
+    <Form-item class="button-position">
       <Button type="primary" @click="handleSubmit('formItems')">提交</Button>
       <Button type="ghost" @click="handleReset('formItems')" style="margin-left: 8px">重置</Button>
     </Form-item>
@@ -23,12 +23,16 @@ export default {
     formItems: {
       items: []
     },
-    submitData: {}
+    submitData: {},
+    groupId: 1
   }),
   components: {
     Marking
   },
   created () {
+    if (window.groupId) {
+      this.groupId = window.groupId
+    }
     if (localStorage.getItem('md5')) {
       this.md5Str = localStorage.getItem('md5')
     }
@@ -49,8 +53,7 @@ export default {
     getTypeList () {
       let json = {
         'md5': this.md5Str,
-        'groupId': 1,
-        'scroeid': 1
+        'groupId': this.groupId
       }
       XHR.TypeList(json).then((res) => {
         let a = res.data.data.categorylist
@@ -82,7 +85,7 @@ export default {
           this.submitData[item.tagname] = item.tagsubmitvalue
         }
       }
-      this.submitData['groupid'] = window.groupid
+      this.submitData['groupId'] = this.groupId
       // 获取scroeid
       this.submitData['scoreid'] = this.getQueryString()
       XHR.submitScroe(this.submitData).then((res) => {
@@ -116,7 +119,7 @@ export default {
     },
     getQueryString () {  // 获取scroeid  第一个参数值
       let name, value
-      let str = location.href.split('#')[0] // 取得整个地址栏
+      let str = location.href // 取得整个地址栏
       let num = str.indexOf('?')
       str = str.substr(num + 1) // 取得所有参数   stringvar.substr(start [, length ]
       let arr = str.split('&') // 各个参数放到数组里
@@ -155,5 +158,14 @@ export default {
   }
   .ivu-form .ivu-form-item .ivu-form-item-label{
     font-size: 14px;
+  }
+  .button-position{
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    z-index: 100;
+  }
+  .button-position .ivu-form-item-content > button{
+    padding: 6px 30px;
   }
 </style>
