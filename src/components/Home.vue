@@ -25,16 +25,18 @@ export default {
     },
     submitData: {},
     groupId: 1,
-    scroeid: ''
+    scoreid: '',
+    urls: ''
   }),
   components: {
     Marking
   },
   created () {
+    this.urls = window.urls
     if (window.groupId) {
       this.groupId = window.groupId
     }
-    this.scroeid = this.getQueryString()
+    this.scoreid = this.getQueryString()
     if (localStorage.getItem('md5')) {
       this.md5Str = localStorage.getItem('md5')
     }
@@ -56,9 +58,9 @@ export default {
       let json = {
         'md5': this.md5Str,
         'groupId': this.groupId,
-        'scroeid': this.scroeid
+        'scoreid': this.scoreid
       }
-      XHR.TypeList(json).then((res) => {
+      XHR.TypeList(this.urls, json).then((res) => {
         let a = res.data.data.categorylist
         // 设置md5缓存
         let md5 = res.data.data.md5str
@@ -78,30 +80,33 @@ export default {
       })
     },
     handleSubmit (name) { // 提交表单填写信息
-      let items = this.$refs[name].model.items
-      let index = items.length
-      for (let i = 0; i < index; i++) {
-        let item = items[i]
-        if (item.tagtype === 4) {
-          this.submitData[item.tagname] = item.tagsubmitvalue.join(',')
-        } else {
-          this.submitData[item.tagname] = item.tagsubmitvalue
-        }
-      }
-      this.submitData['groupId'] = this.groupId
-      // 获取scroeid
-      this.submitData['scoreid'] = this.scoreid
-      XHR.submitScroe(this.submitData).then((res) => {
-        if (res.data.status === '1') {
-          this.$Modal.success({
-            title: '提交成功',
-            content: res.data.message
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          let items = this.$refs[name].model.items
+          let index = items.length
+          for (let i = 0; i < index; i++) {
+            let item = items[i]
+            if (item.tagtype === 4) {
+              this.submitData[item.tagname] = item.tagsubmitvalue.join(',')
+            } else {
+              this.submitData[item.tagname] = item.tagsubmitvalue
+            }
+          }
+          this.submitData['groupId'] = this.groupId
+          // 获取scoreid
+          this.submitData['scoreid'] = this.scoreid
+          XHR.submitScroe(this.urls, this.submitData).then((res) => {
+            if (res.data.status === '1') {
+              this.$Modal.success({
+                title: '提交成功',
+                content: '提交成功'
+              })
+            } else {
+              this.$Message.error(res.data.message)
+            }
           })
         } else {
-          this.$Modal.error({
-            title: '提交失败',
-            content: res.data.message
-          })
+          this.$Message.error('表单验证失败!')
         }
       })
     },
@@ -117,7 +122,7 @@ export default {
         }
       }
     },
-    getQueryString () {  // 获取scroeid  第一个参数值
+    getQueryString () {  // 获取scoreid  第一个参数值
       let name, value
       let str = location.href // 取得整个地址栏
       let num = str.indexOf('?')
@@ -142,28 +147,20 @@ export default {
 <style scoped>
   .item > h2{
     font-size: 20px;
+    padding-top: 20px;
+    padding-left: 20px;
     padding-bottom: 10px;
-    margin-bottom: 20px;
     border-bottom: 1px solid #eee;
-  }
-  .item{
-    padding-bottom: 20px;
   }
   .no-list{
     text-align: center;
     font-size: 20px;
   }
-  .marking-content{
-    padding-left: 20px;
-  }
-  .ivu-form .ivu-form-item .ivu-form-item-label{
-    font-size: 14px;
-  }
   .button-position{
     position: fixed;
     left: 50%;
-    bottom: 40px;
-    z-index: 100;
+    bottom: 20px;
+    z-index: 200;
   }
   .button-position .ivu-form-item-content > button{
     padding: 6px 30px;
